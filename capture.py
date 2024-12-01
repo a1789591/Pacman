@@ -58,7 +58,7 @@ from game import Grid
 from game import Configuration
 from game import Agent
 from game import reconstituteGrid
-import sys, util, types, time, random, imp
+import sys, util, types, time, random, importlib
 import keyboardAgents
 import os
 
@@ -956,7 +956,9 @@ def loadAgents(isRed, factory, textgraphics, cmdLineArgs):
       factory += ".py"
     
     print(factory)
-    module = imp.load_source('player' + str(int(isRed)), factory)
+    spec = importlib.util.spec_from_file_location('player' + str(int(isRed)), factory)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
   except (NameError, ImportError):
     print('Error: The team "' + factory + '" could not be loaded! ', file=sys.stderr)
     traceback.print_exc()
